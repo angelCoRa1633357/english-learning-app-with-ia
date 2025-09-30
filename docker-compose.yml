@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock:ro"  # en WSL2 funciona igual
+
+  backend:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.localhost`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`app.localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: aipass
+      POSTGRES_DB: ailang
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
