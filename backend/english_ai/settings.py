@@ -74,10 +74,15 @@ WSGI_APPLICATION = 'english_ai.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ailang',
+        'USER': 'aiuser',
+        'PASSWORD': 'aipass',
+        'HOST': 'db',  # nombre del servicio de PostgreSQL en Docker Compose
+        'PORT': 5432,
     }
 }
+
 
 
 # Password validation
