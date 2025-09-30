@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+node_modules/
+.env
+db_data/
+models/
+dist/
+.idea/
+*.iml
